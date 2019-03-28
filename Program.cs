@@ -10,12 +10,10 @@ namespace MultiplicativePersistence
 {
     class Program
     {
+        // Search space of each digit of {2, 3, 7}.
         const int MAX_SIZE = 500;
 
         static BigInteger[][] powersOf;
-        static string[] stringOf2;
-        static string[] stringOf3;
-
 
         static void Main(string[] args)
         {
@@ -32,18 +30,6 @@ namespace MultiplicativePersistence
                     powersOf[n][i] = BigInteger.Pow(b, i);
                 }
             }
-
-            stringOf2 = new string[4];
-            stringOf2[0] = "";
-            stringOf2[1] = "2";
-            stringOf2[2] = "22";
-            stringOf2[3] = "222";
-            stringOf3 = new string[4];
-            stringOf3[0] = "";
-            stringOf3[1] = "3";
-            stringOf3[2] = "33";
-            stringOf3[3] = "333";
-
             
             // Distribute the work across threads...
             int numThreads = Environment.ProcessorCount;
@@ -84,9 +70,14 @@ namespace MultiplicativePersistence
             public void ThreadFunc()
             {
                 long millis = Environment.TickCount;
-                string num = "";
+                string numStr = "";
                 int n2, n3, n8, n9;
 
+                // This loop composes numbers of the form [2...2][3...3][7...7] and checks them for multiplicative persistence.
+                // We don't need to iterate over other digits (4, 6, 8, 9) since they are multiples of 2 and 3.
+                // And we don't need to iterate over the digit 5 because it's overwhelmingly likely to produce
+                // a 0 in the next multiplicative step.
+                
                 for (int numTwos = start; numTwos <= end; numTwos++)
                 {
                     for (int numThrees = 0; numThrees <= MAX_SIZE; numThrees++)
@@ -102,11 +93,11 @@ namespace MultiplicativePersistence
                         n9 = numThrees / 2;
                         n3 = numThrees % 2;
 
-                        num = stringOf2[n2] + stringOf3[n3];
+                        numStr = new string('2', n2) + new string('3', n3);
 
-                        for (int numSevens = 0; numSevens <= MAX_SIZE; numSevens++)
+                        for (int n7 = 0; n7 <= MAX_SIZE; n7++)
                         {
-                            CheckNumber(ref num, numSevens, n8, n9, digitCounts, false);
+                            CheckNumber(ref numStr, n7, n8, n9, digitCounts, false);
                         }
                     }
                 }
