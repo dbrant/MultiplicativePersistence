@@ -5,6 +5,9 @@ using System.Threading;
 /// <summary>
 /// A hastily thrown together, although fairly well optimized, solution searcher for
 /// numbers with the highest multiplicative persistence.
+/// 
+/// Dmitry Brant, 2019.
+/// Inspired by the Numberphile video at https://youtu.be/Wim9WJeDTHQ
 /// </summary>
 namespace MultiplicativePersistence
 {
